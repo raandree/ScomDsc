@@ -21,9 +21,5 @@ foreach ($dependency in $data.RequiredModules) {
 foreach ($module in $modules) {
     Write-Host "Installing $module" -ForegroundColor Cyan
     Install-Module $module -Force -SkipPublisherCheck -Repository $Repository
-    try {
-        Import-Module $module -Force -PassThru -ErrorAction Stop
-    } catch {
-        Import-Module $module -Force -PassThru -ErrorAction Stop
-    }
+    Import-Module $module -Force -PassThru -ErrorAction SilentlyContinue
 }
