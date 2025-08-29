@@ -20,6 +20,6 @@ foreach ($dependency in $data.RequiredModules) {
 
 foreach ($module in $modules) {
     Write-Host "Installing $module" -ForegroundColor Cyan
-    Install-Module $module -Force -SkipPublisherCheck -Repository $Repository -ErrorAction SilentlyContinue
-    Import-Module $module -PassThru -ErrorAction SilentlyContinue
+    try { Install-Module $module -Force -SkipPublisherCheck -Repository $Repository -ErrorAction Stop } catch {}
+    try { Import-Module $module -PassThru -ErrorAction Stop } catch { try { Import-Module $module -PassThru -ErrorAction Stop } catch {} }
 }
