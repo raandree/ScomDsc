@@ -4,7 +4,7 @@
     RootModule           = 'cScom.psm1'
 
     # Version number of this module.
-    ModuleVersion        = '1.0.5'
+    ModuleVersion        = '1.1.0'
 
     # ID used to uniquely identify this module
     GUID                 = 'b4632b7c-b7c6-4b99-ae83-f95199630ec0'
@@ -71,10 +71,10 @@
             Tags         = @('SCOM', 'DesiredStateConfiguration', 'DSC', 'DSCResource')
 
             # A URL to the license for this module.
-            LicenseUri   = 'https://github.com/nyanhp/cScom/blob/main/LICENSE'
+            LicenseUri   = 'https://codeberg.org/nyanhp/cScom/raw/branch/main/LICENSE'
 
             # A URL to the main website for this project.
-            ProjectUri   = 'https://github.com/nyanhp/cScom'
+            ProjectUri   = 'https://codeberg.org/nyanhp/cScom'
 
             # A URL to an icon representing this module.
             # IconUri = ''

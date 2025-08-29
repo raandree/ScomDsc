@@ -2,30 +2,41 @@
   push:
     branches:
       - main
-
+name: Build
 jobs:
   build:
 
-    runs-on: windows-2019
+    runs-on: codeberg-tiny-lazy
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: https://code.forgejo.org/actions/checkout@v4
+    - name: setup PowerShell
+      run: |
+        if (! command -v dotnet >/dev/null 2>&1) || (! command -v pwsh >/dev/null 2>&1)
+        then
+            source /etc/os-release
+            wget https://packages.microsoft.com/config/$ID/$VERSION_ID/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+            sudo dpkg -i packages-microsoft-prod.deb
+            rm packages-microsoft-prod.deb
+            sudo apt update
+        fi
+        
+        if ! command -v dotnet >/dev/null 2>&1
+        then
+            sudo apt-get install -y dotnet-sdk-8.0
+        fi
+        if ! command -v pwsh >/dev/null 2>&1
+        then
+            sudo apt-get install -y powershell
+        fi
     - name: Install Prerequisites
-      run: .\build\vsts-prerequisites.ps1
-      shell: powershell
-    - name: Build
-      id: buildmodule
-      run: .\build\vsts-build.ps1 -LocalRepo -SkipPublish
-      shell: powershell
-    - uses: actions/upload-artifact@v3
-      with:
-        name: module
-        path: publish/cScom
+      run: ./build/vsts-prerequisites.ps1
+      shell: pwsh
     - name: Validate
-      run: .\build\vsts-validate.ps1
-      shell: powershell
-    - name: Publish
-      run: .\build\vsts-build.ps1 -ApiKey $env:APIKEY
-      shell: powershell
+      run: ./build/vsts-validate.ps1
+      shell: pwsh
+    - name: Build
+      run: ./build/vsts-build.ps1 -ApiKey $env:APIKEY
+      shell: pwsh
       env:
         APIKEY: ${{ secrets.ApiKey }}
