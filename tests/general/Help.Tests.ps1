@@ -36,20 +36,20 @@ Param (
 	$SkipTest,
 	
 	[string[]]
-	$CommandPath = @("$global:testroot\..\cScom\functions", "$global:testroot\..\cScom\internal\functions"),
+	$CommandPath = @("$global:testroot/../cScom/functions", "$global:testroot/../cScom/internal/functions"),
 	
 	[string]
 	$ModuleName = "cScom",
 	
 	[string]
-	$ExceptionsFile = "$global:testroot\general\Help.Exceptions.ps1"
+	$ExceptionsFile = "$global:testroot/general/Help.Exceptions.ps1"
 )
 if ($SkipTest) { return }
 . $ExceptionsFile
 
 $CommandPath = @(
-    "$global:testroot\..\cScom\functions"
-    "$global:testroot\..\cScom\internal\functions"
+    "$global:testroot/../cScom/functions"
+    "$global:testroot/../cScom/internal/functions"
 )
 
 $includedNames = foreach ($path in $CommandPath) { (Get-ChildItem $path -Recurse -File | Where-Object Name -like "*.ps1").BaseName }

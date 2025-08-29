@@ -37,9 +37,9 @@ if (-not $WorkingDirectory) { $WorkingDirectory = Split-Path $PSScriptRoot }
 Write-Host "Creating and populating publishing directory"
 $publishDir = New-Item -Path $WorkingDirectory -Name publish -ItemType Directory -Force
 $moduleDir = New-Item -path (Join-Path $publishDir cScom) -Force -ItemType Directory
-Copy-Item -Path "$($WorkingDirectory)\cScom\cScom.ps*1" -Destination $moduleDir.FullName -Force
-Copy-Item -Path "$($WorkingDirectory)\cScom\Examples" -Destination $moduleDir.FullName -Force -Recurse
-$theModule = Import-PowerShellDataFile -Path "$($publishDir.FullName)\cScom\cScom.psd1"
+Copy-Item -Path "$($WorkingDirectory)/cScom/cScom.ps*1" -Destination $moduleDir.FullName -Force
+Copy-Item -Path "$($WorkingDirectory)/cScom/Examples" -Destination $moduleDir.FullName -Force -Recurse
+$theModule = Import-PowerShellDataFile -Path "$($publishDir.FullName)/cScom/cScom.psd1"
 $ver = $theModule.ModuleVersion
 if ($theModule.PrivateData.PSData.Prerelease)
 {
@@ -50,26 +50,26 @@ if ($theModule.PrivateData.PSData.Prerelease)
 $text = @( )
 
 # Gather commands
-Get-ChildItem -Path "$($WorkingDirectory)\cScom\classes\" -Recurse -File -Filter "*.ps1" | ForEach-Object {
+Get-ChildItem -Path "$($WorkingDirectory)/cScom/classes/" -Recurse -File -Filter "*.ps1" | ForEach-Object {
 	$text += [System.IO.File]::ReadAllText($_.FullName)
 }
-Get-ChildItem -Path "$($WorkingDirectory)\cScom\resources\" -Recurse -File -Filter "*.ps1" | ForEach-Object {
+Get-ChildItem -Path "$($WorkingDirectory)/cScom/resources/" -Recurse -File -Filter "*.ps1" | ForEach-Object {
 	$text += [System.IO.File]::ReadAllText($_.FullName)
 }
-Get-ChildItem -Path "$($WorkingDirectory)\cScom\functions\" -Recurse -File -Filter "*.ps1" | ForEach-Object {
+Get-ChildItem -Path "$($WorkingDirectory)/cScom/functions/" -Recurse -File -Filter "*.ps1" | ForEach-Object {
 	$text += [System.IO.File]::ReadAllText($_.FullName)
 }
-Get-ChildItem -Path "$($WorkingDirectory)\cScom\internal\functions\" -Recurse -File -Filter "*.ps1" | ForEach-Object {
+Get-ChildItem -Path "$($WorkingDirectory)/cScom/internal/functions/" -Recurse -File -Filter "*.ps1" | ForEach-Object {
 	$text += [System.IO.File]::ReadAllText($_.FullName)
 }
 
 # Gather scripts
-Get-ChildItem -Path "$($WorkingDirectory)\cScom\internal\scripts\" -Recurse -File -Filter "*.ps1" | ForEach-Object {
+Get-ChildItem -Path "$($WorkingDirectory)/cScom/internal/scripts/" -Recurse -File -Filter "*.ps1" | ForEach-Object {
 	$text += [System.IO.File]::ReadAllText($_.FullName)
 }
 
 #region Update the psm1 file & Cleanup
-[System.IO.File]::WriteAllText("$($publishDir.FullName)\cScom\cScom.psm1", ($text -join "`n`n"), [System.Text.Encoding]::UTF8)
+[System.IO.File]::WriteAllText("$($publishDir.FullName)/cScom/cScom.psm1", ($text -join "`n`n"), [System.Text.Encoding]::UTF8)
 #endregion Update the psm1 file & Cleanup
 
 #region Updating the Module Version
@@ -87,16 +87,16 @@ if ($AutoVersion)
 	}
 
 	$parameter = @{
-		Path = "$($publishDir.FullName)\cScom\cScom.psd1"
+		Path = "$($publishDir.FullName)/cScom/cScom.psd1"
 	}
 
-	[Version]$remoteModuleVersion = $remoteVersion -replace '-\w+'
-	[string]$prerelease = $remoteVersion -replace '[\d\.]+-'
+	[Version]$remoteModuleVersion = $remoteVersion -replace '-/w+'
+	[string]$prerelease = $remoteVersion -replace '[/d/.]+-'
 	if ($prerelease)
 	{
-		$null = $prerelease -match '\d+'
+		$null = $prerelease -match '/d+'
 		$number = [int]$Matches.0 + 1
-		$parameter['Prerelease'] = $prerelease -replace '\d', $number
+		$parameter['Prerelease'] = $prerelease -replace '/d', $number
 	}
 	else
 	{
@@ -116,12 +116,12 @@ if ($LocalRepo)
 	Write-Host  "Creating Nuget Package for module: PSFramework"
 	New-PSMDModuleNugetPackage -ModulePath (Get-Module -Name PSFramework).ModuleBase -PackagePath .
 	Write-Host  "Creating Nuget Package for module: cScom"
-	New-PSMDModuleNugetPackage -ModulePath "$($publishDir.FullName)\cScom" -PackagePath .
+	New-PSMDModuleNugetPackage -ModulePath "$($publishDir.FullName)/cScom" -PackagePath .
 }
 else
 {
 	# Publish to Gallery
 	Write-Host  "Publishing the cScom module to $($Repository)"
-	Publish-Module -Path "$($publishDir.FullName)\cScom" -NuGetApiKey $ApiKey -Force -Repository $Repository
+	Publish-Module -Path "$($publishDir.FullName)/cScom" -NuGetApiKey $ApiKey -Force -Repository $Repository
 }
 #endregion Publish

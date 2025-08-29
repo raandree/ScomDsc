@@ -1,2 +1,2 @@
 ﻿# Run internal pester tests
-& "$PSScriptRoot\..\tests\pester.ps1"
+& "$PSScriptRoot/../tests/pester.ps1"
