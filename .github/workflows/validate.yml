@@ -29,6 +29,8 @@ jobs:
     - name: Install Prerequisites
       run: ./build/vsts-prerequisites.ps1
       shell: pwsh
+    - run: ./build/vsts-build.ps1 -SkipPublish -LocalRepo
+      shell: pwsh
     - name: Validate
       run: ./build/vsts-validate.ps1
       shell: pwsh
