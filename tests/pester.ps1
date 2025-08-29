@@ -20,8 +20,7 @@ $global:testroot = $PSScriptRoot
 $global:__pester_data = @{ }
 
 Remove-Module cScom -ErrorAction Ignore
-Import-Module "$PSScriptRoot/../publish/cScom/cScom.psd1"
-Import-Module "$PSScriptRoot/../publish/cScom/cScom.psm1" -Force
+Import-Module "$PSScriptRoot/../publish/cScom/cScom.psd1" -ErrorAction SilentlyContinue
 Import-Module -Force "$PSScriptRoot/helpers/WebAdministrationStub.psm1"
 
 # Need to import explicitly so we can use the configuration class
