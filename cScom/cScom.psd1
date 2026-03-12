@@ -4,7 +4,7 @@
     RootModule           = 'cScom.psm1'
 
     # Version number of this module.
-    ModuleVersion        = '1.1.0'
+    ModuleVersion        = '1.2.0'
 
     # ID used to uniquely identify this module
     GUID                 = 'b4632b7c-b7c6-4b99-ae83-f95199630ec0'
