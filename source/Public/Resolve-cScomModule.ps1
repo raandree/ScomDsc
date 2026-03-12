@@ -33,5 +33,5 @@ function Resolve-cScomModule
         return
     }
 
-    Import-Module -ModuleInfo $module -Force
+    Import-Module -Name $module.Name -Force
 }
