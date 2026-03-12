@@ -1,2 +1,9 @@
-﻿publish
-TestResults
+*.suo
+*.user
+*.coverage
+.vs
+.vscode
+.psproj
+.sln
+markdownissues.txt
+output/
