@@ -102,7 +102,7 @@ class ScomComponent
         $parameters = @{
             Role = $this.Role
         }
-    
+
         switch ($this.Role)
         {
             'FirstManagementServer'
@@ -159,16 +159,16 @@ class ScomComponent
                 $parameters['InstallLocation'] = $this.InstallLocation
             }
         }
-    
+
         $commandline = Get-cScomParameter @parameters -Uninstall:$($this.Ensure -eq 'Absent')
         $setupEchse = Get-ChildItem -Path $this.SourcePath -Filter setup.exe
-    
+
         if (-not $setupEchse)
         {
             Write-Error -Message "Path $($this.SourcePath) is missing setup.exe"
             return
         }
-    
+
         $obfuscatedCmdline = $commandline
         foreach ($pwdKey in $parameters.GetEnumerator())
         {
@@ -176,14 +176,26 @@ class ScomComponent
             $obfuscatedCmdline = $obfuscatedCmdline.Replace($pwdKey.Value, '******')
         }
         Write-Verbose -Message "Starting setup of SCOM $($this.Role): $($setupEchse.FullName) $obfuscatedCmdline"
-        $installation = Start-Process -Wait -PassThru -FilePath $setupEchse.FullName -ArgumentList $commandLine -WindowStyle Hidden
-    
+
+        # Use Process.Start with UseShellExecute=false instead of Start-Process.
+        # PowerShell 5.1's Start-Process defaults to UseShellExecute=true (ShellExecuteEx),
+        # which hangs indefinitely on UNC paths in non-interactive WinRM/DSC sessions
+        # due to a blocked security prompt on Windows Server 2025.
+        $processStartInfo = [System.Diagnostics.ProcessStartInfo]@{
+            FileName        = $setupEchse.FullName
+            Arguments       = $commandLine
+            UseShellExecute = $false
+            CreateNoWindow  = $true
+        }
+        $installation = [System.Diagnostics.Process]::Start($processStartInfo)
+        $installation.WaitForExit()
+
         if ($installation.ExitCode -eq 3010) { $global:DSCMachineStatus = 1; return }
-    
+
         if ($installation.ExitCode -ne 0)
         {
             Write-Error -Message "Installation ran into an error. Exit code was $($installation.ExitCode)"
-        }    
+        }
     }
 
     [bool] Test()
