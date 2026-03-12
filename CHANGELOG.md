@@ -17,6 +17,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added DscResource.Test for HQRM testing.
 - Added DscResource.DocGenerator for documentation generation.
 - Added codecov.yml for code coverage tracking.
+- `Test-cScomInstallationStatus` now accepts both `[hashtable]` and
+  `[ScomComponent]` class instances for the `-ScomComponent` parameter.
+
+### Fixed
+
+- `Get-cScomParameter` now correctly applies caller-supplied parameter values
+  instead of always using role defaults.
+- `Resolve-cScomModule` no longer throws when `Get-ChildItem` finds no
+  OperationsManager module file on disk.
+
+### Added
+
+- Unit tests for `ScomComponent` DSC resource class (36 tests).
+- Unit tests for `Get-cScomParameter` (60 tests).
+- Unit tests for `Resolve-cScomModule` (6 tests).
 
 ## [1.2.0] - 2025-01-01
 

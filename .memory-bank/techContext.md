@@ -1,13 +1,14 @@
 # ScomDsc - Tech Context
 
-## Current State (Pre-Migration)
+## Current State (Post-Migration)
 
 ### Module Structure
-- **Module name**: `cScom` (in `cScom/` directory)
+- **Module name**: `ScomDsc` (in `source/` directory)
 - **Module GUID**: `b4632b7c-b7c6-4b99-ae83-f95199630ec0`
-- **Current version**: 1.2.0
+- **Current version**: 3.0.0-preview
 - **PowerShell version**: 5.1
-- **Root module**: `cScom.psm1` (dot-sources all .ps1 files at runtime)
+- **Build output**: `output/builtModule/ScomDsc/3.0.0/`
+- **Root module**: `ScomDsc.psm1` (compiled by ModuleBuilder)
 
 ### Source Layout
 ```

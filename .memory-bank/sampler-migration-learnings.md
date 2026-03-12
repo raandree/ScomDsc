@@ -28,6 +28,7 @@
 
 - Never put build logs in `output/` — the Clean task deletes `output/*` 
   and will fail with file-in-use error.
+- Use project root or temp directory instead (e.g., `build-test.log`).
 
 ### CHANGELOG.md Format
 
@@ -38,6 +39,30 @@
 
 - Set `next-version: 2.0.0` in GitVersion.yml for major version bump
 - Use `regex: ^main$` under `master:` branch config when default branch is `main`
+
+### Testing Class-Based DSC Resources with Pester 5
+
+- **Use `using module ScomDsc`** at file top to make class types accessible.
+  `Import-Module` alone does NOT export class types.
+- **Do NOT also call `Import-Module -Force`** — this creates a second module
+  session state. Mocks target the second state, but class methods run in the
+  first, causing mocks to silently not apply.
+- **`Should -Invoke` is unreliable for calls through class methods** — when
+  a class's `Get()` method calls a mocked function, Pester may not track it.
+  Verify behavior (return values, side effects) instead of invocation counts.
+- **Public functions called from class methods** (e.g., `Test-cScomInstallationStatus`)
+  need untyped or flexible parameters — the class passes `$this` (a class
+  instance), not a hashtable.
+- **PSModulePath setup in test BeforeAll** — when running outside Sampler's
+  build pipeline, tests need to add `output/RequiredModules` and 
+  `output/builtModule` to `$env:PSModulePath` manually.
+
+### Get-cScomParameter Bug Pattern
+
+- Functions with role-specific default hashtables must check `$PSBoundParameters`
+  FIRST, then fall back to defaults. The anti-pattern is checking 
+  `IsNullOrWhiteSpace($default)` first — this ignores bound params when
+  a non-empty default exists.
 
 ### Reference Project
 

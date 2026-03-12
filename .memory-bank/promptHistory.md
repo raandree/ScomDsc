@@ -2,25 +2,24 @@
 
 ## 2026-03-12
 
+### Prompt 3: Update Memory Bank and Docs
+- **Request**: Update Memory Bank and documentation
+- **Actions**: Updated activeContext, progress, systemPatterns, techContext, CHANGELOG, promptHistory
+
+### Prompt 2: Fix Unit Test Failures (50 failures → 0)
+- **Request**: Tests were crashing VS Code (Pester called directly, not via Start-Process)
+- **Root Cause**: Called `Invoke-Pester` directly in VS Code terminal, freezing the extension host
+- **Actions**:
+  - Re-ran tests via `Start-Process` (detached) per sampler-build-debug skill
+  - Fixed `Get-cScomParameter` — parameter priority was inverted; `$PSBoundParameters` only checked when default was empty, causing custom values to be ignored
+  - Fixed `Resolve-cScomModule` — `Get-Module $null` threw when `Get-ChildItem` returned nothing; added null guard
+  - Fixed `Test-cScomInstallationStatus` — `[hashtable]` param type rejected `[ScomComponent]` class instance passed from `Get()`
+  - Fixed `ScomComponent.Tests.ps1` — added `using module ScomDsc` for class type access; removed duplicate `Import-Module -Force` (dual session state broke mocks); removed unreliable `Should -Invoke` (behavior already verified)
+  - Fixed `Resolve-cScomModule.Tests.ps1` — mock returned `PSCustomObject` instead of `PSModuleInfo`
+- **Result**: Build succeeded. 117 tests, 0 failures, 16 tasks, 0 errors
+- **Key Learning**: For class-based DSC tests, use `using module` (not `Import-Module`) and never also call `Import-Module -Force`
+
 ### Prompt 1: Migration Analysis & Plan
 - **Request**: Migrate project from Codeberg to GitHub dsccommunity, migrate to Sampler framework
-- **Actions**: 
-  - Read sampler-migration skill
-  - Analyzed all source files, build scripts, tests, manifest
-  - Fetched ComputerManagementDsc as reference (active dsccommunity Sampler project)
-  - Created Memory Bank: projectbrief, productContext, techContext, systemPatterns, activeContext, progress
-- **Key Findings**:
-  - Module `cScom` has 12 class-based DSC resources, 3 functions, 6 enum/class types
-  - Legacy VSTS build scripts, no Sampler infrastructure at all
-  - Module GUID to preserve: `b4632b7c-b7c6-4b99-ae83-f95199630ec0`
-  - Runtime deps: AutomatedLab.Common, DscResource.Base
-  - Pester 5 already in use (good) but with custom test runner
-- **Migration Execution**: All 7 phases completed
-  - Source restructured: `cScom/` → `source/` with numeric-prefixed classes
-  - Build system: build.ps1, build.yaml, RequiredModules.psd1 from ComputerManagementDsc reference
-  - CI/CD: azure-pipelines.yml with Build/Test/Deploy stages
-  - Tests migrated to `tests/Unit/Public/` with DscResource.Test pattern
-  - Community files: CHANGELOG.md, CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md, issue templates
-  - Legacy cleanup: removed build/, cScom/, Codeberg workflows, old test runner
-  - Build verified: `Build succeeded. 7 tasks, 0 errors, 0 warnings`
-  - Built module at output/builtModule/ScomDsc/2.1.0/ with all exports intact
+- **Actions**: Full 7-phase migration completed
+- **Result**: Build succeeded. Module compiles and all exports intact.

@@ -19,7 +19,12 @@ function Resolve-cScomModule
 
     if (-not $module)
     {
-        $module = Get-Module (Get-ChildItem -Path $env:ProgramFiles -Recurse -Filter OperationsManager.psd1 -ErrorAction SilentlyContinue | Select-Object -First 1) -ErrorAction SilentlyContinue
+        $moduleFile = Get-ChildItem -Path $env:ProgramFiles -Recurse -Filter OperationsManager.psd1 -ErrorAction SilentlyContinue | Select-Object -First 1
+
+        if ($moduleFile)
+        {
+            $module = Get-Module $moduleFile.FullName -ErrorAction SilentlyContinue
+        }
     }
 
     if (-not $module)

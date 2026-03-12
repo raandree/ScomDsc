@@ -16,7 +16,7 @@ function Test-cScomInstallationStatus
     [CmdletBinding()]
     param
     (
-        [hashtable]
+        [Parameter()]
         $ScomComponent
     )
 

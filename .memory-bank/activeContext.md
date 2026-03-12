@@ -2,38 +2,28 @@
 
 ## Current Status
 
-Migration to Sampler framework COMPLETED. Build verified successfully.
+Migration to Sampler COMPLETED. Unit tests all passing (117 tests, 0 failures).
+Build pipeline: `build,test` succeeds end-to-end.
 
-## Final Project Structure
+## Recent Changes (2026-03-12)
 
-```
-ScomDsc/
-+-- source/
-|   +-- Classes/           # Enums (001-005), base classes (010), DSC resources (020-031)
-|   +-- Public/            # 3 exported functions
-|   +-- Examples/Resources/ScomComponent/
-|   +-- ScomDsc.psd1       # Module manifest (GUID preserved)
-|   +-- ScomDsc.psm1       # Placeholder (ModuleBuilder fills)
-|   +-- prefix.ps1         # using module DscResource.Base + imports
-+-- tests/
-|   +-- Unit/Public/       # Unit tests (1 test file migrated)
-+-- .github/               # Issue templates, PR template
-+-- build.ps1              # Sampler bootstrap
-+-- build.yaml             # Sampler build configuration
-+-- RequiredModules.psd1   # Build + runtime dependencies
-+-- Resolve-Dependency.ps1 # Dependency resolution
-+-- azure-pipelines.yml    # CI/CD pipeline
-+-- GitVersion.yml         # Semantic versioning (next: 2.0.0)
-+-- CHANGELOG.md           # Keep a Changelog format
-+-- README.md              # With badges
-```
+- Fixed `Get-cScomParameter` — custom values were ignored (defaults always used)
+- Fixed `Resolve-cScomModule` — null guard for `Get-ChildItem` returning nothing
+- Fixed `Test-cScomInstallationStatus` — `[hashtable]` param type blocked `[ScomComponent]` input
+- Added `ScomComponent.Tests.ps1` — full unit tests for DSC resource class (36 tests)
+- Added `Get-cScomParameter.Tests.ps1` — full unit tests (60 tests)
+- Updated `Resolve-cScomModule.Tests.ps1` — PSModulePath setup for build context
+- All 4 test files pass: 117 tests total
 
-## Reference Project
+## Key Testing Pattern for Class-Based DSC
 
-ComputerManagementDsc (dsccommunity) used as reference for all Sampler patterns.
+- Use `using module ScomDsc` at file top for class type access
+- Do NOT also call `Import-Module -Force` (creates dual session state, breaks mocks)
+- `Should -Invoke` may not track calls made through class methods; verify behavior instead
+- Always run tests via `Start-Process` (detached), never directly in VS Code terminal
 
 ## Next Steps
 
-- Run unit tests and HQRM tests
+- Run HQRM tests (`./build.ps1 -Tasks hqrmtest`)
 - Set up Azure DevOps pipeline
-- Consider updating sampler-migration skill with DSC-specific patterns learned
+- First release to PSGallery

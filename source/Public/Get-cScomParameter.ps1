@@ -153,10 +153,13 @@ function Get-cScomParameter
     }
 
     $arguments = $parameters[$Role.ToString()].GetEnumerator() | Sort-Object Key | ForEach-Object {
-        $value = $_.Value
-        if ([string]::IsNullOrWhiteSpace($value) -and $PSBoundParameters.ContainsKey($_.Key))
+        if ($PSBoundParameters.ContainsKey($_.Key))
         {
             $value = $PSBoundParameters[$_.Key]
+        }
+        else
+        {
+            $value = $_.Value
         }
         '/{0}:"{1}"' -f $_.Key, $value
     }
